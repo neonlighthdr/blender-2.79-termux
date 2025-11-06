@@ -50,19 +50,19 @@ jobs:
 
       - name: Clone Blender source (2.79)
         run: |
-          git clone https://github.com/blender/blender.git
-          cd blender
+          git clone https://github.com/nerdynoob223/blender-2.79b/ -b blender-v2.79b-release
+          cd blender-2.79b
           git checkout blender-v2.79b-release
 
       - name: Configure Blender build
         run: |
-          cd blender
+          cd blender-2.79b
           mkdir build && cd build
           cmake .. -G Ninja -DWITH_PLAYER=OFF -DWITH_GAMEENGINE=ON
 
       - name: Build Blender
         run: |
-          cd blender/build
+          cd blender-2.79b/build
           ninja -j$(nproc)
 
       - name: Upload build output
