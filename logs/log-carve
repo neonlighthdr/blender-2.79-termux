@@ -1,0 +1,19 @@
+[  0%] Built target bf_intern_string
+[  1%] Built target bf_intern_ghost
+[  1%] Built target bf_intern_guardedalloc
+[  2%] Built target bf_intern_libmv
+[  2%] Built target bf_intern_memutil
+[  2%] Built target bf_intern_opencolorio
+[  2%] Built target bf_intern_mikktspace
+[  2%] Built target bf_intern_glew_mx
+[  2%] Built target bf_intern_eigen
+[  2%] Built target bf_intern_decklink
+[  3%] Built target bf_intern_dualcon
+[  3%] Built target extern_curve_fit_nd
+[  3%] Built target extern_rangetree
+[  3%] Built target extern_wcwidth
+[  3%] Built target extern_minilzo
+[  3%] Built target extern_lzma
+[  3%] Built target extern_clew
+[  4%] Built target extern_cuew
+[  4%] Building CXX object extern/carve/CMakeFiles/extern_carve.dir/carve-capi.cc.o
