@@ -1,0 +1,96 @@
+name: Build Blender 2.79 (Termux Package Style)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-termux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Pull Termux build image
+        run: |
+          docker pull termux/termux-docker:aarch64
+
+      - name: Build Blender inside Termux environment
+        run: |
+          docker run --rm \
+            -v $PWD:/home/builder \
+            termux/termux-docker:aarch64 \
+            bash -c "
+              set -e
+
+              export PREFIX=/data/data/com.termux/files/usr
+              export HOME=/home/builder
+              export PATH=\$PREFIX/bin:\$PATH
+
+              pkg update
+              pkg install -y \
+                clang \
+                make \
+                cmake \
+                ninja \
+                git \
+                python \
+                pkg-config \
+                libx11 \
+                libxi \
+                libxrandr \
+                libxinerama \
+                libxrender \
+                libxfixes \
+                freetype \
+                libjpeg-turbo \
+                libpng \
+                libtiff \
+                ffmpeg \
+                openal-soft \
+                boost \
+                libepoxy \
+                jemalloc
+
+              git clone https://github.com/nerdynoob223/blender-2.79b.git
+              cd blender-2.79b
+              git checkout blender-v2.79b-release
+
+              mkdir build
+              cd build
+
+              cmake .. -G Ninja \
+                -DCMAKE_INSTALL_PREFIX=\$PREFIX \
+                -DCMAKE_C_COMPILER=clang \
+                -DCMAKE_CXX_COMPILER=clang++ \
+                -DWITH_PLAYER=OFF \
+                -DWITH_GAMEENGINE=OFF \
+                -DWITH_CYCLES=OFF \
+                -DWITH_OPENGL=ON \
+                -DWITH_X11=ON \
+                -DWITH_JACK=OFF \
+                -DWITH_PULSEAUDIO=OFF \
+                -DWITH_ALSA=OFF \
+                -DWITH_PYTHON_INSTALL=OFF \
+                -DPYTHON_VERSION=3.11 || true
+
+              ninja || true
+            "
+
+      - name: Collect build output
+        run: |
+          mkdir -p output
+          docker run --rm \
+            -v $PWD/output:/output \
+            termux/termux-docker:aarch64 \
+            bash -c "
+              cp -r blender-2.79b/build/bin /output || true
+            "
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender-2.79-termux
+          path: output
